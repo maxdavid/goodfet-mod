@@ -14,7 +14,7 @@ class USBKeyboardInterface(USBInterface):
     hid_descriptor = b'\x09\x21\x10\x01\x00\x01\x22\x2b\x00'
     report_descriptor = b'\x05\x01\x09\x06\xA1\x01\x05\x07\x19\xE0\x29\xE7\x15\x00\x25\x01\x75\x01\x95\x08\x81\x02\x95\x01\x75\x08\x81\x01\x19\x00\x29\x65\x15\x00\x25\x65\x75\x08\x95\x01\x81\x00\xC0'
 
-    def __init__(self, verbose=0):
+    def __init__(self, verbose=3):
         descriptors = { 
                 USB.desc_type_hid    : self.hid_descriptor,
                 USB.desc_type_report : self.report_descriptor
@@ -58,11 +58,11 @@ class USBKeyboardInterface(USBInterface):
         letter = self.keys.pop(0)
         self.type_letter(letter)
 
-    def type_letter(self, letter, modifiers=0):
-        data = bytes([ 0, 0, ord(letter) ])
+    def type_letter(self, letter, modifier=0):
+        data = bytes([ modifier, 0, ord(letter) ])
 
         if self.verbose > 2:
-            print(self.name, "sending keypress 0x%02x" % ord(letter))
+          print(self.name, 'sending keypress 0x{:02}, mod {}'.format(ord(letter), modifier))
 
         self.configuration.device.maxusb_app.send_on_endpoint(3, data)
 
