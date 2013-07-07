@@ -2,7 +2,8 @@
 
 """Facedancer Keyboard Input
 
-Pass a string on the command line to have it typed on the target computer.
+Pass a string on the command line, convert it to HID keypresses, and send it 
+to the target.
 """
 import sys
 
@@ -27,7 +28,13 @@ def main():
   except KeyboardInterrupt:
     d.disconnect()
 
-def ascii_to_hid(inputstr):
+def ascii_to_hid(input_str):
+  """ASCII to HID character
+
+  Convert an ASCII character to an HID keypress.
+    Specifically, takes the first character of an input string to a tuple of 
+    (modifier, keycode) to be passed to the target that represents a keypress.
+  """
   keymap = {
       'a' : (0x04, 0), # Keypresses with no modifier (mod = 0)
       'b' : (0x05, 0),
@@ -163,7 +170,24 @@ def ascii_to_hid(inputstr):
       '?' : (0x38, 2)
       # Keypresses with LeftCtrl + LeftShift (mod = 3)
       # Keypresses with LeftAlt (mod = 4)
-    }
+  }
+
+  # Return the HID code for the first character in the input string
+  return keymap(input_str[0])
+
+def string_to_hid(input_str):
+  """String to HID list
+
+  Convert a string to a list of tuples representing an HID keypress.
+    Each tuple contains a key in the form of (modifier, keycode) that will 
+    represent a keypress to the target.
+  """
+  hid_list = []
+  for character in input_str:
+    hid_list.append(ascii_to_hid(character))
+
+  # hid_list now contains the string in a form of HID tuples, (mod, key)
+  return hid_list
 
 
 if __name__ == "__main__":
