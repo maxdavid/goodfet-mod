@@ -5,35 +5,16 @@
 Pass a string on the command line, convert it to HID keypresses, and send it 
 to the target.
 """
-import sys
 
-from serial import Serial, PARITY_NONE
-
-from Facedancer import *
-from MAXUSBApp import *
-from USBKeyboard import *
-
-def main():
-  sp = Serial("/dev/ttyUSB0", 115200, parity=PARITY_NONE, timeout=2)
-  fd = Facedancer(sp, verbose=1)
-  u = MAXUSBApp(fd, verbose=1)
-
-  d = USBKeyboardDevice(u, verbose=4)
-
-  d.connect()
-
-  try:
-    d.run()
-  # SIGINT raises KeyboardInterrupt
-  except KeyboardInterrupt:
-    d.disconnect()
-
-def ascii_to_hid(input_str):
+def ascii_to_hid(input_str=None):
   """ASCII to HID character
 
   Convert an ASCII character to an HID keypress.
     Specifically, takes the first character of an input string to a tuple of 
-    (modifier, keycode) to be passed to the target that represents a keypress.
+    (modifier, keycode) that represents a keypress to be passed to the target. 
+    By default returns a (0, 0x00), which represents a <KEY UP>
+
+  input_str -- a string, ideally of length 1, to be converted (default None)
   """
   keymap = {
       'a' : (0x04, 0), # Keypresses with no modifier (mod = 0)
@@ -101,7 +82,7 @@ def ascii_to_hid(input_str):
       ' ' : (0x0d, 1),
       '': (0x0e, 1),
       '': (0x0f, 1),
-      '': (0x10, 1),
+      ' ' : (0x10, 1),
       '': (0x11, 1),
       '': (0x12, 1),
       '': (0x13, 1),
@@ -175,7 +156,7 @@ def ascii_to_hid(input_str):
   # Return the HID code for the first character in the input string
   return keymap(input_str[0])
 
-def string_to_hid(input_str):
+def string_to_hid_list(input_str):
   """String to HID list
 
   Convert a string to a list of tuples representing an HID keypress.
@@ -189,6 +170,3 @@ def string_to_hid(input_str):
   # hid_list now contains the string in a form of HID tuples, (mod, key)
   return hid_list
 
-
-if __name__ == "__main__":
-  main()
