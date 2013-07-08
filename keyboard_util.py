@@ -12,6 +12,9 @@ def ascii_to_hid(input_str=None):
 
   input_str -- a string, ideally of length 1, to be converted (default None)
   """
+  if input_str is None:
+    return (0x00, 0)
+
   keymap = {
       'a' : (0x04, 0), # Keypresses with no modifier (mod = 0)
       'b' : (0x05, 0),
