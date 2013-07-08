@@ -7,6 +7,7 @@ from USBDevice import *
 from USBConfiguration import *
 from USBInterface import *
 from USBEndpoint import *
+import keyboard_util
 
 class USBKeyboardInterface(USBInterface):
     name = "USB keyboard interface"
@@ -45,24 +46,27 @@ class USBKeyboardInterface(USBInterface):
                 descriptors
         )
 
-        # "l<KEY UP>s<KEY UP><ENTER><KEY UP>"
-        empty_preamble = [ 0x00 ] * 10
-        text = [ 0x0f, 0x00, 0x16, 0x00, 0x28, 0x00 ]
+        empty_preamble = [ None ] * 10
+        input_str = "vim wat.sh\ri#!/bin/bash\u000Decho hello\u001BZZchmod +x ./wat.sh\u000D./wat.sh\u000D"
+        text = []
+        for char in input_str:
+          text.append(char)
+          text.append(None)
 
-        self.keys = [ chr(x) for x in empty_preamble + text ]
+        self.keys = [ keyboard_util.ascii_to_hid(x) for x in empty_preamble + text ]
 
     def handle_buffer_available(self):
         if not self.keys:
             return
 
-        letter = self.keys.pop(0)
-        self.type_letter(letter)
+        keycode = self.keys.pop(0) # Grab a tuple of form (key, mod)
+        self.type_letter(keycode[0], keycode[1])
 
     def type_letter(self, letter, modifier=0):
-        data = bytes([ modifier, 0, ord(letter) ])
+        data = bytes([ modifier, 0, letter ])
 
         if self.verbose > 2:
-          print(self.name, 'sending keypress 0x{:02}, mod {}'.format(ord(letter), modifier))
+          print(self.name, 'sending keypress 0x{:02}, mod {}'.format(int(letter), modifier))
 
         self.configuration.device.maxusb_app.send_on_endpoint(3, data)
 
