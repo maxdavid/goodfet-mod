@@ -153,7 +153,8 @@ def ascii_to_hid(input_str=None):
   }
 
   # Return the HID code for the first character in the input string
-  return keymap(input_str[0])
+  return keymap[input_str[0]]
+
 
 def string_to_hid_list(input_str):
   """String to HID list
