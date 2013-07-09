@@ -7,7 +7,6 @@ from USBDevice import *
 from USBConfiguration import *
 from USBInterface import *
 from USBEndpoint import *
-import keyboard_util
 
 class USBKeyboardInterface(USBInterface):
     name = "USB keyboard interface"
@@ -53,9 +52,9 @@ class USBKeyboardInterface(USBInterface):
             text.append(char)
             text.append(None)
 
-        self.keys = [ keyboard_util.ascii_to_hid(x) for x in empty_preamble + text ]
+        self.keys = [ self.ascii_to_hid(x) for x in empty_preamble + text ]
 
-    def ascii_to_hid(input_str=None):
+    def ascii_to_hid(self, input_str=None):
         """ASCII to HID character
 
         Convert an ASCII character to an HID keypress.
@@ -69,7 +68,7 @@ class USBKeyboardInterface(USBInterface):
         if input_str is None:
             return (0x00, 0)
 
-        keymap = {
+        self.keymap = {
             'a' : (0x04, 0), # Keypresses with no modifier (mod = 0)
             'b' : (0x05, 0),
             'c' : (0x06, 0),
@@ -207,7 +206,7 @@ class USBKeyboardInterface(USBInterface):
         }
 
         # Return the HID code for the first character in the input string
-        return keymap[input_str[0]]
+        return self.keymap[input_str[0]]
 
     def handle_buffer_available(self):
         if not self.keys:
