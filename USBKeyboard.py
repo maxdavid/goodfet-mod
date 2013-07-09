@@ -45,7 +45,7 @@ class USBKeyboardInterface(USBInterface):
                 descriptors
         )
 
-        empty_preamble = [ None ] * 10
+        empty_preamble = [ None ] * 10  #FIXME Why is this here? seems to work fine without it
         input_str = "vim wat.sh\ri#!/bin/bash\u000Decho hello\u001BZZchmod +x ./wat.sh\u000D./wat.sh\u000D"
         text = []
         for char in input_str:
@@ -105,7 +105,7 @@ class USBKeyboardInterface(USBInterface):
             '8' : (0x25, 0),
             '9' : (0x26, 0),
             '0' : (0x27, 0),
-            '\n': (0x28, 0),
+            '\n': (0x28, 0), # can also be '\r'
             '': (0x29, 0), # \u001B
             '': (0x2a, 0), # \u007F
             '\t': (0x2b, 0),
@@ -115,7 +115,7 @@ class USBKeyboardInterface(USBInterface):
             '[' : (0x2f, 0),
             ']' : (0x30, 0),
             '\\': (0x31, 0),
-            'zq': (0x32, 0), #FIXME should be an ellipses
+            ''  : (0x32, 0), #FIXME should be an ellipses
             ';' : (0x33, 0),
             '\'': (0x34, 0),
             '`' : (0x35, 0),
@@ -134,7 +134,7 @@ class USBKeyboardInterface(USBInterface):
             ' ' : (0x0d, 1),
             '': (0x0e, 1),
             '': (0x0f, 1),
-            '\u000D': (0x10, 1), # can be written as '\r' in python
+            '\u000D': (0x10, 1), # can be written as '\r' or '\n'
             '': (0x11, 1),
             '': (0x12, 1),
             '': (0x13, 1),
@@ -194,7 +194,7 @@ class USBKeyboardInterface(USBInterface):
             '{' : (0x2f, 2),
             '}' : (0x30, 2),
             '|' : (0x31, 2),
-            'zq': (0x32, 2), #FIXME should be an ellipses
+            ''  : (0x32, 2), #FIXME should be an ellipses
             ':' : (0x33, 2),
             '"' : (0x34, 2),
             '~' : (0x35, 2),
