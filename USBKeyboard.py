@@ -113,7 +113,7 @@ class USBKeyboardInterface(USBInterface):
             '[' : (0x2f, 0),
             ']' : (0x30, 0),
             '\\': (0x31, 0),
-            ''  : (0x32, 0), #FIXME should be an ellipses
+            '\\': (0x32, 0),
             ';' : (0x33, 0),
             '\'': (0x34, 0),
             '`' : (0x35, 0),
@@ -192,7 +192,7 @@ class USBKeyboardInterface(USBInterface):
             '{' : (0x2f, 2),
             '}' : (0x30, 2),
             '|' : (0x31, 2),
-            ''  : (0x32, 2), #FIXME should be an ellipses
+            '|' : (0x32, 2),
             ':' : (0x33, 2),
             '"' : (0x34, 2),
             '~' : (0x35, 2),
