@@ -50,29 +50,27 @@ class USBKeyboardInterface(USBInterface):
         input_str = "vim wat.sh\ri#!/bin/bash\u000Decho hello\u001BZZchmod +x ./wat.sh\u000D./wat.sh\u000D"
         text = []
         for char in input_str:
-          text.append(char)
-          text.append(None)
+            text.append(char)
+            text.append(None)
 
         self.keys = [ keyboard_util.ascii_to_hid(x) for x in empty_preamble + text ]
 
     def ascii_to_hid(input_str=None):
-        """ASCII to HID
+        """ASCII to HID character
 
         Convert an ASCII character to an HID keypress.
-          Specifically, turns the first character of an input string to a tuple 
-          of (modifier, keycode) that represents a keypress to be passed to the 
-          target. By default returns a (0, 0x00), which represents a <KEY UP>
+            Specifically, takes the first character of an input string to a tuple of 
+            (modifier, keycode) that represents a keypress to be passed to the target. 
+            By default returns a (0, 0x00), which represents a <KEY UP>
 
         input_str -- a string, ideally of length 1, to be converted (default None)
         returns   -- a tuple containing an HID keycode byte and a integer modifier
         """
-
         if input_str is None:
-          return (0x00, 0)
+            return (0x00, 0)
 
         keymap = {
-            ### Keypresses with no modifier (mod = 0)
-            'a' : (0x04, 0),
+            'a' : (0x04, 0), # Keypresses with no modifier (mod = 0)
             'b' : (0x05, 0),
             'c' : (0x06, 0),
             'd' : (0x07, 0),
@@ -125,8 +123,7 @@ class USBKeyboardInterface(USBInterface):
             ',' : (0x36, 0),
             '.' : (0x37, 0),
             '/' : (0x38, 0),
-            ### Keypresses with LeftCtrl (mod = 1)
-            '': (0x04, 1),
+            '': (0x04, 1), # Keypresses with LeftCtrl (mod = 1)
             '': (0x05, 1),
             '': (0x06, 1),
             '': (0x07, 1),
@@ -152,8 +149,7 @@ class USBKeyboardInterface(USBInterface):
             '': (0x1b, 1),
             '': (0x1c, 1),
             '': (0x1d, 1),
-            ### Keypresses with LeftShift (mod = 2)
-            'A' : (0x04, 2),
+            'A' : (0x04, 2), # Keypresses with LeftShift (mod = 2)
             'B' : (0x05, 2),
             'C' : (0x06, 2),
             'D' : (0x07, 2),
@@ -206,10 +202,11 @@ class USBKeyboardInterface(USBInterface):
             '<' : (0x36, 2),
             '>' : (0x37, 2),
             '?' : (0x38, 2)
-            ### Keypresses with LeftCtrl + LeftShift (mod = 3)
-            ### Keypresses with LeftAlt (mod = 4)
+            # Keypresses with LeftCtrl + LeftShift (mod = 3)
+            # Keypresses with LeftAlt (mod = 4)
         }
 
+        # Return the HID code for the first character in the input string
         return keymap[input_str[0]]
 
     def handle_buffer_available(self):
