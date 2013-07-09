@@ -11,6 +11,7 @@ def ascii_to_hid(input_str=None):
     By default returns a (0, 0x00), which represents a <KEY UP>
 
   input_str -- a string, ideally of length 1, to be converted (default None)
+  returns   -- a tuple containing an HID keycode byte and a integer modifier
   """
   if input_str is None:
     return (0x00, 0)
