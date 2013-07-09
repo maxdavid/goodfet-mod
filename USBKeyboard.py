@@ -60,11 +60,9 @@ class USBKeyboardInterface(USBInterface):
         Convert an ASCII character to an HID keypress.
             Specifically, takes the first character of an input string to a tuple of 
             (modifier, keycode) that represents a keypress to be passed to the target. 
-            By default returns a (0, 0x00), which represents a <KEY UP>
-
-        input_str -- a string, ideally of length 1, to be converted (default None)
-        returns   -- a tuple containing an HID keycode byte and a integer modifier
+            No arguments returns a (0x00, 0), representing a <KEY UP>
         """
+
         if input_str is None:
             return (0x00, 0)
 
