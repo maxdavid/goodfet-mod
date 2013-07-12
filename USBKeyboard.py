@@ -44,17 +44,29 @@ class USBKeyboardInterface(USBInterface):
                 [ endpoint ],
                 descriptors
         )
+        
+        # This is the string that's sent to the target
+        payload_str = "vim wat.sh\ri#!/bin/bash\recho hello\u001BZZchmod +x ./wat.sh\u000D./wat.sh\u000D"
+        self.keys = self.string_to_hid_list(payload_str)
 
-        empty_preamble = [ None ] * 10  #FIXME Why is this here? seems to work fine without it
-        input_str = "vim wat.sh\ri#!/bin/bash\u000Decho hello\u001BZZchmod +x ./wat.sh\u000D./wat.sh\u000D"
+    def string_to_hid_list(self, input_str=None):
+        """String to HID list
+
+        Convert a string to a list of tuples representing an HID keypress.
+        Each tuple contains a key in the form of (modifier, keycode) that will
+        represent a keypress to the target. Each character is separated by a 
+        (0x00, 0), which represents a <KEY UP>
+        """
         text = []
+        empty_preamble = [ None ] * 10  #FIXME Why is this here? seems to work fine without it
+
         for char in input_str:
             text.append(char)
             text.append(None)
 
-        self.keys = [ self.ascii_to_hid(x) for x in empty_preamble + text ]
+        return [ self.ascii_to_hid(x) for x in empty_preamble + text ]
 
-    def ascii_to_hid(self, input_str=None):
+    def ascii_to_hid(self, input_char=None):
         """ASCII to HID character
 
         Convert an ASCII character to an HID keypress.
@@ -63,7 +75,7 @@ class USBKeyboardInterface(USBInterface):
             No arguments returns a (0x00, 0), representing a <KEY UP>
         """
 
-        if input_str is None:
+        if input_char is None:
             return (0x00, 0)
 
         self.keymap = {
@@ -132,7 +144,7 @@ class USBKeyboardInterface(USBInterface):
             ' ' : (0x0d, 1),
             '': (0x0e, 1),
             '': (0x0f, 1),
-            '\u000D': (0x10, 1), # can be written as '\r' or '\n'
+            '\r': (0x10, 1), # \u000D
             '': (0x11, 1),
             '': (0x12, 1),
             '': (0x13, 1),
@@ -204,7 +216,7 @@ class USBKeyboardInterface(USBInterface):
         }
 
         # Return the HID code for the first character in the input string
-        return self.keymap[input_str[0]]
+        return self.keymap[input_char[0]]
 
     def handle_buffer_available(self):
         if not self.keys:
