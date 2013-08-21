@@ -47,8 +47,6 @@ class USBKeyboardInterface(USBInterface):
         
         # This is the string that's sent to the target
         payload_str = "ls\r"
-        #payload_str = "cd Desktop\rvim wat.sh\ri#!/bin/bash\rfor i in {1..100}\rdo\rtouch lolwat.$i\rdone\r\u001BZZchmod +x ./wat.sh\u000D./wat.sh\u000D"
-        #payload_str = "cd Desktop\rvim wat.sh\ri#!/bin/bash\rfor i in {1..1000}\rdo\recho -n \"What is love? Baby don't hurt me. \"\rdone\recho\rsay Dont hurt me, no more.\r\u001BZZchmod +x ./wat.sh\u000D./wat.sh\u000D"
         self.keys = self.string_to_hid_list(payload_str)
 
     def string_to_hid_list(self, input_str=None):
@@ -60,7 +58,7 @@ class USBKeyboardInterface(USBInterface):
         (0x00, 0), which represents a <KEY UP>
         """
         text = []
-        empty_preamble = [ None ] * 10  #FIXME Why is this here? seems to work fine without it
+        empty_preamble = [ None ] * 10  # Why is this here? seems to work fine without it
 
         for char in input_str:
             text.append(char)
@@ -81,7 +79,7 @@ class USBKeyboardInterface(USBInterface):
             return (0x00, 0)
 
         self.keymap = {
-            'a' : (0x04, 0), # Keypresses with no modifier (mod = 0)
+            'a' : (0x04, 0), ### Keypresses with no modifier (mod = 0)
             'b' : (0x05, 0),
             'c' : (0x06, 0),
             'd' : (0x07, 0),
@@ -134,7 +132,7 @@ class USBKeyboardInterface(USBInterface):
             ',' : (0x36, 0),
             '.' : (0x37, 0),
             '/' : (0x38, 0),
-            '': (0x04, 1), # Keypresses with LeftCtrl (mod = 1)
+            '': (0x04, 1), #### Keypresses with LeftCtrl (mod = 1)
             '': (0x05, 1),
             '': (0x06, 1),
             '': (0x07, 1),
@@ -160,7 +158,7 @@ class USBKeyboardInterface(USBInterface):
             '': (0x1b, 1),
             '': (0x1c, 1),
             '': (0x1d, 1),
-            'A' : (0x04, 2), # Keypresses with LeftShift (mod = 2)
+            'A' : (0x04, 2), ### Keypresses with LeftShift (mod = 2)
             'B' : (0x05, 2),
             'C' : (0x06, 2),
             'D' : (0x07, 2),
@@ -213,18 +211,17 @@ class USBKeyboardInterface(USBInterface):
             '<' : (0x36, 2),
             '>' : (0x37, 2),
             '?' : (0x38, 2)
-            # Keypresses with LeftCtrl + LeftShift (mod = 3)
-            # Keypresses with LeftAlt (mod = 4)
+            ### Keypresses with LeftCtrl + LeftShift (mod = 3)
+            ### Keypresses with LeftAlt (mod = 4)
         }
 
-        # Return the HID code for the first character in the input string
         return self.keymap[input_char[0]]
 
     def handle_buffer_available(self):
         if not self.keys:
             return
 
-        keycode = self.keys.pop(0) # Grab a tuple of form (key, mod)
+        keycode = self.keys.pop(0)  # Grab a tuple of form (key, mod)
         self.type_letter(keycode[0], keycode[1])
 
     def type_letter(self, letter, modifier=0):
@@ -242,7 +239,7 @@ class USBKeyboardDevice(USBDevice):
     def __init__(self, maxusb_app, verbose=0):
         config = USBConfiguration(
                 1,                                          # index
-                "Emulated Keyboard",    # string desc
+                "Emulated Keyboard",                        # string desc
                 [ USBKeyboardInterface() ]                  # interfaces
         )
 
