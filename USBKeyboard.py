@@ -46,7 +46,9 @@ class USBKeyboardInterface(USBInterface):
         )
         
         # This is the string that's sent to the target
-        payload_str = "vim wat.sh\ri#!/bin/bash\recho hello\u001BZZchmod +x ./wat.sh\u000D./wat.sh\u000D"
+        payload_str = "ls\r"
+        #payload_str = "cd Desktop\rvim wat.sh\ri#!/bin/bash\rfor i in {1..100}\rdo\rtouch lolwat.$i\rdone\r\u001BZZchmod +x ./wat.sh\u000D./wat.sh\u000D"
+        #payload_str = "cd Desktop\rvim wat.sh\ri#!/bin/bash\rfor i in {1..1000}\rdo\recho -n \"What is love? Baby don't hurt me. \"\rdone\recho\rsay Dont hurt me, no more.\r\u001BZZchmod +x ./wat.sh\u000D./wat.sh\u000D"
         self.keys = self.string_to_hid_list(payload_str)
 
     def string_to_hid_list(self, input_str=None):
